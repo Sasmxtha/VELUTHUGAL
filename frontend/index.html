@@ -1,531 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>விழுதுகள் - Veluthugal</title>
-  <meta name="description" content="விழுதுகள் (Veluthugal) - A devoted team celebrating our temple's glory. View events, members, and community activities.">
+  <meta name="description"
+    content="விழுதுகள் (Veluthugal) - A devoted team celebrating our temple's glory. View events, members, and community activities.">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+Tamil:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+Tamil:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
 
-<!-- SPLASH SCREEN -->
-<div id="splashScreen" class="splash-screen">
-  <div class="splash-glass">
-    <div class="splash-logo-wrap">
-      <img src="logo.png" alt="விழுதுகள் Logo" class="splash-logo" onerror="this.style.display='none';document.getElementById('splashFallbackIcon').style.display='block'">
-      <div id="splashFallbackIcon" style="display:none;font-size:5rem;">🦉</div>
-    </div>
-    <div class="splash-name">விழுதுகள்</div>
-    <div class="splash-name-en">VELUTHUGAL</div>
-    <div class="splash-tagline">A devoted team celebrating our temple's glory</div>
-    <button class="splash-enter-btn" onclick="enterDashboard()">
-      <span>Enter</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-    <div class="splash-hint">Click to explore</div>
-  </div>
-</div>
-
-<!-- PARTICLES BG (login) -->
-<div id="particles" class="particles-bg"></div>
-
-<!-- SIDEBAR NAV -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="logo-wrap">
-      <div class="sidebar-logo-icon">🏛️</div>
-      <div class="logo-text">
-        <span class="logo-en">VELUTHUGAL</span>
-        <span class="logo-ta">வேலுதுகள்</span>
+  <!-- SPLASH SCREEN -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-glass">
+      <div class="splash-logo-wrap">
+        <img src="logo.png" alt="விழுதுகள் Logo" class="splash-logo"
+          onerror="this.style.display='none';document.getElementById('splashFallbackIcon').style.display='block'">
+        <div id="splashFallbackIcon" style="display:none;font-size:5rem;">🦉</div>
       </div>
+      <div class="splash-name">விழுதுகள்</div>
+      <div class="splash-name-en">VELUTHUGAL</div>
+      <div class="splash-tagline">A devoted team celebrating our temple's glory</div>
+      <button class="splash-enter-btn" onclick="enterDashboard()">
+        <span>Enter</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
+      <div class="splash-hint">Click to explore</div>
     </div>
-    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
   </div>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#" onclick="showPage('home')" data-page="home"><span class="nav-icon">🏠</span> Home</a></li>
-    <li><a href="#" onclick="showPage('events')" data-page="events"><span class="nav-icon">🎉</span> Events</a></li>
-    <li><a href="#" onclick="showPage('calendar')" data-page="calendar"><span class="nav-icon">📅</span> Calendar</a></li>
-    <li><a href="#" onclick="showPage('members')" data-page="members"><span class="nav-icon">👥</span> Members</a></li>
-    <li id="nav-admin" style="display:none"><a href="#" onclick="showPage('admin')" data-page="admin"><span class="nav-icon">⚙️</span> Admin Panel</a></li>
-    <li id="nav-logout" style="display:none"><a href="#" onclick="logout()"><span class="nav-icon">🚪</span> Logout</a></li>
-  </ul>
-</nav>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-<!-- TOP BAR -->
-<header class="topbar" id="mainTopbar">
-  <div class="topbar-left">
-    <button class="hamburger" onclick="toggleSidebar()" id="hamburgerBtn">☰</button>
-    <span class="site-title" onclick="showPage('home')" style="cursor:pointer" title="விழுதுகள் - Home">
-      <img src="logo.png" alt="Logo" class="topbar-logo-img" onerror="this.style.display='none'">
-      விழுதுகள்
-    </span>
-  </div>
-  <div class="topbar-right" id="authArea">
-    <button class="btn-login" onclick="showPage('login')">Login</button>
-    <button class="btn-register" onclick="showPage('register')">Register</button>
-  </div>
-  <div class="topbar-right" id="userArea" style="display:none">
-    <span class="user-badge" id="userBadge"></span>
-    <button class="btn-logout-top" onclick="logout()">Logout</button>
-  </div>
-</header>
+  <!-- PARTICLES BG (login) -->
+  <div id="particles" class="particles-bg"></div>
 
-<!-- PAGES -->
-<main class="page-container">
-
-  <!-- HOME PAGE -->
-  <div id="page-home" class="page active">
-    <div class="hero">
-      <div class="hero-particles"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <div class="hero-logo-wrap">
-          <img src="logo.png" alt="விழுதுகள் Logo" class="hero-logo" onerror="this.style.display='none'">
-        </div>
-        <div class="hero-badge">🕉️ Since 2010</div>
-        <h1>விழுதுகள்</h1>
-        <h2>VELUTHUGAL</h2>
-        <p id="heroText">A team of devoted young uncles who organize and celebrate the glory of our temple</p>
-        <div class="hero-actions">
-          <button class="hero-btn hero-btn-primary" onclick="showPage('events')">
-            <span>🎉</span> View Our Events
-          </button>
-          <button class="hero-btn hero-btn-outline" onclick="showPage('members')">
-            <span>👥</span> Meet the Team
-          </button>
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-wrap">
+        <div class="sidebar-logo-icon">🏛️</div>
+        <div class="logo-text">
+          <span class="logo-en">VELUTHUGAL</span>
+          <span class="logo-ta">வேலுதுகள்</span>
         </div>
       </div>
+      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
     </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" onclick="showPage('home')" data-page="home"><span class="nav-icon">🏠</span> Home</a></li>
+      <li><a href="#" onclick="showPage('events')" data-page="events"><span class="nav-icon">🎉</span> Events</a></li>
+      <li><a href="#" onclick="showPage('calendar')" data-page="calendar"><span class="nav-icon">📅</span> Calendar</a>
+      </li>
+      <li><a href="#" onclick="showPage('members')" data-page="members"><span class="nav-icon">👥</span> Members</a>
+      </li>
+      <li id="nav-admin" style="display:none"><a href="#" onclick="showPage('admin')" data-page="admin"><span
+            class="nav-icon">⚙️</span> Admin Panel</a></li>
+      <li id="nav-logout" style="display:none"><a href="#" onclick="logout()"><span class="nav-icon">🚪</span>
+          Logout</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- CTA SECTION -->
-    <section class="cta-section">
-      <div class="cta-inner">
-        <div class="cta-text">
-          <h2 id="ctaTitle">Let's find more that brings us together.</h2>
-          <p id="ctaDesc">Veluthugal connects our community through sacred festivals, shared memories, and cherished traditions. Discover events, meet members, and celebrate together.</p>
-          <div class="cta-actions">
-            <button class="cta-btn-primary" onclick="showPage('events')">View All Events</button>
-            <button class="cta-btn-outline" onclick="showPage('members')">
-              <span>👥</span> Meet Members
-            </button>
+  <!-- TOP BAR -->
+  <header class="topbar" id="mainTopbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="toggleSidebar()" id="hamburgerBtn">☰</button>
+      <span class="site-title" onclick="showPage('home')" style="cursor:pointer" title="விழுதுகள் - Home">
+        <img src="logo.png" alt="Logo" class="topbar-logo-img" onerror="this.style.display='none'">
+        விழுதுகள்
+      </span>
+    </div>
+    <div class="topbar-right" id="authArea">
+      <button class="btn-login" onclick="showPage('login')">Login</button>
+      <button class="btn-register" onclick="showPage('register')">Register</button>
+    </div>
+    <div class="topbar-right" id="userArea" style="display:none">
+      <span class="user-badge" id="userBadge"></span>
+      <button class="btn-logout-top" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- PAGES -->
+  <main class="page-container">
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active">
+      <div class="hero">
+        <div class="hero-particles"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-logo-wrap">
+            <img src="logo.png" alt="விழுதுகள் Logo" class="hero-logo" onerror="this.style.display='none'">
           </div>
-        </div>
-        <div class="cta-stats">
-          <div class="cta-stat"><span id="heroStatEvents">–</span><small>Events</small></div>
-          <div class="cta-stat"><span id="heroStatMembers">–</span><small>Members</small></div>
-          <div class="cta-stat"><span>14+</span><small>Years</small></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="recent-events">
-      <div class="section-header-row">
-        <h2 class="section-title">Recent Events <span>சமீபத்திய நிகழ்வுகள்</span></h2>
-        <button class="see-all-btn" onclick="showPage('events')">See All →</button>
-      </div>
-      <div class="events-grid" id="homeEventsGrid">
-        <div class="loading-spin"></div>
-      </div>
-    </section>
-
-    <!-- MEMBERS TEASER -->
-    <section class="members-teaser">
-      <div class="section-header-row">
-        <h2 class="section-title">Our Members <span>எங்கள் உறுப்பினர்கள்</span></h2>
-        <button class="see-all-btn" onclick="showPage('members')">See All →</button>
-      </div>
-      <div class="members-teaser-grid" id="membersTeaser">
-        <div class="loading-spin"></div>
-      </div>
-    </section>
-  </div>
-
-  <!-- EVENTS PAGE -->
-  <div id="page-events" class="page">
-    <div class="page-header">
-      <h1>All Events <span>அனைத்து நிகழ்வுகள்</span></h1>
-      <p class="page-header-sub">Celebrating our heritage, one event at a time</p>
-    </div>
-    <div class="events-grid" id="allEventsGrid">
-      <div class="loading-spin"></div>
-    </div>
-  </div>
-
-  <!-- CALENDAR PAGE -->
-  <div id="page-calendar" class="page">
-    <div class="page-header">
-      <h1>Calendar <span>நாட்காட்டி</span></h1>
-    </div>
-    <div class="calendar-wrap">
-      <div class="calendar-controls">
-        <button onclick="calPrev()">◀</button>
-        <div id="calTitle"></div>
-        <button onclick="calNext()">▶</button>
-      </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
-      <div class="calendar-legend">
-        <span class="legend-item"><span class="dot dot-en"></span> English Date</span>
-        <span class="legend-item"><span class="dot dot-ta"></span> Tamil Date</span>
-        <span class="legend-item"><span class="dot dot-event"></span> Event</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- MEMBERS PAGE -->
-  <div id="page-members" class="page">
-    <div class="page-header">
-      <h1>Our Members <span>எங்கள் உறுப்பினர்கள்</span></h1>
-      <p class="page-header-sub">The devoted team behind every celebration</p>
-    </div>
-    <div class="members-detail-grid" id="membersGrid">
-      <div class="loading-spin"></div>
-    </div>
-  </div>
-
-  <!-- LOGIN PAGE -->
-  <div id="page-login" class="page login-page">
-    <div class="login-split">
-      <div class="login-left">
-        <div class="login-left-content">
-          <div class="login-brand-icon">🏛️</div>
-          <h1>வேலுதுகள்</h1>
+          <div class="hero-badge">Since 2013</div>
+          <h1>விழுதுகள்</h1>
           <h2>VELUTHUGAL</h2>
-          <p>A sacred community of devotion and tradition</p>
-          <div class="login-features">
-            <div class="login-feature"><span>🎉</span> Access exclusive event details & expenses</div>
-            <div class="login-feature"><span>👥</span> View full member profiles</div>
-            <div class="login-feature"><span>🕉️</span> Stay connected with our community</div>
+          <p id="heroText">A team of devoted young uncles who organize and celebrate the glory of our temple</p>
+          <div class="hero-actions">
+            <button class="hero-btn hero-btn-primary" onclick="showPage('events')">
+              <span>🎉</span> View Our Events
+            </button>
+            <button class="hero-btn hero-btn-outline" onclick="showPage('members')">
+              <span>👥</span> Meet the Team
+            </button>
           </div>
         </div>
       </div>
-      <div class="login-right">
-        <div class="auth-card">
-          <div class="auth-logo">
-            <h2>Welcome Back</h2>
-            <p>வேலுதுகள் குழு</p>
-          </div>
-          <div class="tab-buttons">
-            <button class="tab-btn active" id="tabAdmin" onclick="switchLoginTab('admin')">⚙️ Admin</button>
-            <button class="tab-btn" id="tabMember" onclick="switchLoginTab('member')">👤 Member</button>
-          </div>
-          <div id="loginError" class="error-msg" style="display:none"></div>
-          <div class="auth-form" id="adminLoginForm">
-            <div class="input-group">
-              <span class="input-icon">👤</span>
-              <input type="text" id="adminUser" placeholder="Admin username" autocomplete="username">
+
+      <!-- CTA SECTION -->
+      <section class="cta-section">
+        <div class="cta-inner">
+          <div class="cta-text">
+            <h2 id="ctaTitle">Let's find more that brings us together.</h2>
+            <p id="ctaDesc">Veluthugal connects our community through sacred festivals, shared memories, and cherished
+              traditions. Discover events, meet members, and celebrate together.</p>
+            <div class="cta-actions">
+              <button class="cta-btn-primary" onclick="showPage('events')">View All Events</button>
+              <button class="cta-btn-outline" onclick="showPage('members')">
+                <span>👥</span> Meet Members
+              </button>
             </div>
-            <div class="input-group">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password">
-              <button class="toggle-pass" onclick="togglePass('adminPass', this)" type="button">👁️</button>
-            </div>
-            <button class="btn-primary" id="adminLoginBtn" onclick="loginAdmin()">
-              <span class="btn-text">Login as Admin</span>
-              <span class="btn-spinner" style="display:none">⏳</span>
-            </button>
           </div>
-          <div class="auth-form" id="memberLoginForm" style="display:none">
-            <div class="input-group">
-              <span class="input-icon">📧</span>
-              <input type="email" id="memberEmail" placeholder="Your email" autocomplete="email">
-            </div>
-            <div class="input-group">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="memberPass" placeholder="Password" autocomplete="current-password">
-              <button class="toggle-pass" onclick="togglePass('memberPass', this)" type="button">👁️</button>
-            </div>
-            <button class="btn-primary" id="memberLoginBtn" onclick="loginMember()">
-              <span class="btn-text">Login as Member</span>
-              <span class="btn-spinner" style="display:none">⏳</span>
-            </button>
-            <p class="auth-link">Not a member? <a href="#" onclick="showPage('register')">Register here</a></p>
+          <div class="cta-stats">
+            <div class="cta-stat"><span id="heroStatEvents">–</span><small>Events</small></div>
+            <div class="cta-stat"><span id="heroStatMembers">–</span><small>Members</small></div>
           </div>
+        </div>
+      </section>
+
+      <section class="recent-events">
+        <div class="section-header-row">
+          <h2 class="section-title">Recent Events <span>சமீபத்திய நிகழ்வுகள்</span></h2>
+          <button class="see-all-btn" onclick="showPage('events')">See All →</button>
+        </div>
+        <div class="events-grid" id="homeEventsGrid">
+          <div class="loading-spin"></div>
+        </div>
+      </section>
+
+      <!-- MEMBERS TEASER -->
+      <section class="members-teaser">
+        <div class="section-header-row">
+          <h2 class="section-title">Our Members <span>எங்கள் உறுப்பினர்கள்</span></h2>
+          <button class="see-all-btn" onclick="showPage('members')">See All →</button>
+        </div>
+        <div class="members-teaser-grid" id="membersTeaser">
+          <div class="loading-spin"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- EVENTS PAGE -->
+    <div id="page-events" class="page">
+      <div class="page-header">
+        <h1>All Events <span>அனைத்து நிகழ்வுகள்</span></h1>
+        <p class="page-header-sub">Celebrating our heritage, one event at a time</p>
+      </div>
+      <div class="events-grid" id="allEventsGrid">
+        <div class="loading-spin"></div>
+      </div>
+    </div>
+
+    <!-- CALENDAR PAGE -->
+    <div id="page-calendar" class="page">
+      <div class="page-header">
+        <h1>Calendar <span>நாட்காட்டி</span></h1>
+      </div>
+      <div class="calendar-wrap">
+        <div class="calendar-controls">
+          <button onclick="calPrev()">◀</button>
+          <div id="calTitle"></div>
+          <button onclick="calNext()">▶</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-legend">
+          <span class="legend-item"><span class="dot dot-en"></span> English Date</span>
+          <span class="legend-item"><span class="dot dot-ta"></span> Tamil Date</span>
+          <span class="legend-item"><span class="dot dot-event"></span> Event</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- REGISTER PAGE -->
-  <div id="page-register" class="page login-page">
-    <div class="login-split">
-      <div class="login-left">
-        <div class="login-left-content">
-          <div class="login-brand-icon">🏛️</div>
-          <h1>Join Us</h1>
-          <h2>வேலுதுகள்</h2>
-          <p>Become part of our sacred community</p>
-          <div class="login-features">
-            <div class="login-feature"><span>✅</span> Submit your registration</div>
-            <div class="login-feature"><span>⏳</span> Wait for admin approval</div>
-            <div class="login-feature"><span>🎊</span> Access member-only content</div>
-          </div>
-        </div>
+    <!-- MEMBERS PAGE -->
+    <div id="page-members" class="page">
+      <div class="page-header">
+        <h1>Our Members <span>எங்கள் உறுப்பினர்கள்</span></h1>
+        <p class="page-header-sub">The devoted team behind every celebration</p>
       </div>
-      <div class="login-right">
-        <div class="auth-card">
-          <div class="auth-logo">
-            <h2>Join Veluthugal</h2>
-            <p>Register as a member</p>
-          </div>
-          <div id="registerMsg" class="error-msg" style="display:none"></div>
-          <div class="auth-form">
-            <div class="input-group">
-              <span class="input-icon">👤</span>
-              <input type="text" id="regName" placeholder="Your full name">
-            </div>
-            <div class="input-group">
-              <span class="input-icon">📧</span>
-              <input type="email" id="regEmail" placeholder="Your email">
-            </div>
-            <div class="input-group">
-              <span class="input-icon">📞</span>
-              <input type="tel" id="regPhone" placeholder="Phone number (optional)">
-            </div>
-            <div class="input-group">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="regPass" placeholder="Create a password">
-              <button class="toggle-pass" onclick="togglePass('regPass', this)" type="button">👁️</button>
-            </div>
-            <button class="btn-primary" onclick="registerMember()">Register</button>
-            <p class="auth-link">Already a member? <a href="#" onclick="showPage('login')">Login</a></p>
-          </div>
-        </div>
+      <div class="members-detail-grid" id="membersGrid">
+        <div class="loading-spin"></div>
       </div>
     </div>
-  </div>
 
-  <!-- EVENT DETAIL PAGE -->
-  <div id="page-event-detail" class="page">
-    <button class="back-btn" onclick="showPage('events')">← Back to Events</button>
-    <div id="eventDetailContent"></div>
-  </div>
-
-  <!-- ADMIN PAGE -->
-  <div id="page-admin" class="page">
-    <div class="admin-layout">
-      <div class="admin-tabs">
-        <div class="admin-tabs-header">⚙️ Admin Panel</div>
-        <button class="admin-tab active" id="atab-dashboard" onclick="switchAdminTab('dashboard', this)">📊 Dashboard</button>
-        <button class="admin-tab" id="atab-events" onclick="switchAdminTab('events', this)">🎉 Events</button>
-        <button class="admin-tab" id="atab-members" onclick="switchAdminTab('members', this)">👥 Members</button>
-        <button class="admin-tab" id="atab-content" onclick="switchAdminTab('content', this)">📝 Content</button>
-        <button class="admin-tab" id="atab-settings" onclick="switchAdminTab('settings', this)">🔑 Settings</button>
-      </div>
-      <div class="admin-content">
-
-        <!-- Dashboard -->
-        <div id="adminTab-dashboard" class="admin-tab-content active">
-          <div class="admin-page-title">📊 Dashboard</div>
-          <div class="stats-grid" id="statsGrid"></div>
-          <div class="admin-section-card">
-            <div class="admin-section-card-header">
-              <h3>⏳ Pending Approvals</h3>
-              <span class="badge-count" id="pendingCount">0</span>
-            </div>
-            <div id="pendingList"></div>
-          </div>
-          <div class="admin-section-card">
-            <div class="admin-section-card-header"><h3>🔔 Notifications</h3></div>
-            <div id="notifList"></div>
-          </div>
-        </div>
-
-        <!-- Events Management -->
-        <div id="adminTab-events" class="admin-tab-content">
-          <div class="admin-section-header">
-            <div class="admin-page-title">🎉 Manage Events</div>
-            <button class="btn-add" onclick="openEventModal()">+ Add Event</button>
-          </div>
-          <div id="adminEventsList"></div>
-        </div>
-
-        <!-- Members Management -->
-        <div id="adminTab-members" class="admin-tab-content">
-          <div class="admin-page-title">👥 Manage Members</div>
-          <div id="adminMembersList"></div>
-        </div>
-
-        <!-- Content Settings -->
-        <div id="adminTab-content" class="admin-tab-content">
-          <div class="admin-page-title">📝 Edit Website Content</div>
-          <div class="settings-section">
-            <h3>Home Page Text</h3>
-            <div class="settings-form" style="max-width: 600px;">
-              <div class="form-group">
-                <label>Hero Description</label>
-                <textarea id="editHeroDesc" rows="2"></textarea>
-              </div>
-              <div class="form-group">
-                <label>Call to Action Title</label>
-                <input type="text" id="editCtaTitle">
-              </div>
-              <div class="form-group">
-                <label>Call to Action Description</label>
-                <textarea id="editCtaDesc" rows="3"></textarea>
-              </div>
-              <button class="btn-primary-inline" style="margin-top:10px" onclick="saveContentSettings()">Save Content</button>
+    <!-- LOGIN PAGE -->
+    <div id="page-login" class="page login-page">
+      <div class="login-split">
+        <div class="login-left">
+          <div class="login-left-content">
+            <div class="login-brand-icon">🏛️</div>
+            <h1>வேலுதுகள்</h1>
+            <h2>VELUTHUGAL</h2>
+            <p>A sacred community of devotion and tradition</p>
+            <div class="login-features">
+              <div class="login-feature"><span>🎉</span> Access exclusive event details & expenses</div>
+              <div class="login-feature"><span>👥</span> View full member profiles</div>
+              <div class="login-feature"><span>🕉️</span> Stay connected with our community</div>
             </div>
           </div>
         </div>
-
-        <!-- Settings -->
-        <div id="adminTab-settings" class="admin-tab-content">
-          <div class="admin-page-title">🔑 Settings</div>
-          <div class="settings-section">
-            <h3>Change Admin Password</h3>
-            <div class="settings-form">
+        <div class="login-right">
+          <div class="auth-card">
+            <div class="auth-logo">
+              <h2>Welcome Back</h2>
+              <p>வேலுதுகள் குழு</p>
+            </div>
+            <div class="tab-buttons">
+              <button class="tab-btn active" id="tabAdmin" onclick="switchLoginTab('admin')">⚙️ Admin</button>
+              <button class="tab-btn" id="tabMember" onclick="switchLoginTab('member')">👤 Member</button>
+            </div>
+            <div id="loginError" class="error-msg" style="display:none"></div>
+            <div class="auth-form" id="adminLoginForm">
+              <div class="input-group">
+                <span class="input-icon">👤</span>
+                <input type="text" id="adminUser" placeholder="Admin username" autocomplete="username">
+              </div>
               <div class="input-group">
                 <span class="input-icon">🔒</span>
-                <input type="password" id="settingCurrPass" placeholder="Current password">
+                <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password">
+                <button class="toggle-pass" onclick="togglePass('adminPass', this)" type="button">👁️</button>
+              </div>
+              <button class="btn-primary" id="adminLoginBtn" onclick="loginAdmin()">
+                <span class="btn-text">Login as Admin</span>
+                <span class="btn-spinner" style="display:none">⏳</span>
+              </button>
+            </div>
+            <div class="auth-form" id="memberLoginForm" style="display:none">
+              <div class="input-group">
+                <span class="input-icon">📧</span>
+                <input type="email" id="memberEmail" placeholder="Your email" autocomplete="email">
               </div>
               <div class="input-group">
-                <span class="input-icon">🔑</span>
-                <input type="password" id="settingNewPass" placeholder="New password">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="memberPass" placeholder="Password" autocomplete="current-password">
+                <button class="toggle-pass" onclick="togglePass('memberPass', this)" type="button">👁️</button>
               </div>
-              <button class="btn-primary btn-inline" onclick="changeAdminPassword()">Update Password</button>
-              <div id="settingMsg" class="error-msg" style="display:none;margin-top:10px"></div>
+              <button class="btn-primary" id="memberLoginBtn" onclick="loginMember()">
+                <span class="btn-text">Login as Member</span>
+                <span class="btn-spinner" style="display:none">⏳</span>
+              </button>
+              <p class="auth-link">Not a member? <a href="#" onclick="showPage('register')">Register here</a></p>
             </div>
           </div>
-          <div class="settings-section">
-            <h3>Member Passwords</h3>
-            <div id="memberPasswordsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="page-register" class="page login-page">
+      <div class="login-split">
+        <div class="login-left">
+          <div class="login-left-content">
+            <div class="login-brand-icon">🏛️</div>
+            <h1>Join Us</h1>
+            <h2>வேலுதுகள்</h2>
+            <p>Become part of our sacred community</p>
+            <div class="login-features">
+              <div class="login-feature"><span>✅</span> Submit your registration</div>
+              <div class="login-feature"><span>⏳</span> Wait for admin approval</div>
+              <div class="login-feature"><span>🎊</span> Access member-only content</div>
+            </div>
+          </div>
+        </div>
+        <div class="login-right">
+          <div class="auth-card">
+            <div class="auth-logo">
+              <h2>Join Veluthugal</h2>
+              <p>Register as a member</p>
+            </div>
+            <div id="registerMsg" class="error-msg" style="display:none"></div>
+            <div class="auth-form">
+              <div class="input-group">
+                <span class="input-icon">👤</span>
+                <input type="text" id="regName" placeholder="Your full name">
+              </div>
+              <div class="input-group">
+                <span class="input-icon">📧</span>
+                <input type="email" id="regEmail" placeholder="Your email">
+              </div>
+              <div class="input-group">
+                <span class="input-icon">📞</span>
+                <input type="tel" id="regPhone" placeholder="Phone number (optional)">
+              </div>
+              <div class="input-group">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regPass" placeholder="Create a password">
+                <button class="toggle-pass" onclick="togglePass('regPass', this)" type="button">👁️</button>
+              </div>
+              <button class="btn-primary" onclick="registerMember()">Register</button>
+              <p class="auth-link">Already a member? <a href="#" onclick="showPage('login')">Login</a></p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-</main>
-
-<!-- EVENT MODAL -->
-<div id="eventModal" class="modal" style="display:none">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2 id="eventModalTitle">Add Event</h2>
-      <button onclick="closeEventModal()">✕</button>
+    <!-- EVENT DETAIL PAGE -->
+    <div id="page-event-detail" class="page">
+      <button class="back-btn" onclick="showPage('events')">← Back to Events</button>
+      <div id="eventDetailContent"></div>
     </div>
-    <div class="modal-body">
-      <input type="hidden" id="editEventId">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Title (English) *</label>
-          <input type="text" id="evTitleEn" placeholder="Event title in English">
+
+    <!-- ADMIN PAGE -->
+    <div id="page-admin" class="page">
+      <div class="admin-layout">
+        <div class="admin-tabs">
+          <div class="admin-tabs-header">⚙️ Admin Panel</div>
+          <button class="admin-tab active" id="atab-dashboard" onclick="switchAdminTab('dashboard', this)">📊
+            Dashboard</button>
+          <button class="admin-tab" id="atab-events" onclick="switchAdminTab('events', this)">🎉 Events</button>
+          <button class="admin-tab" id="atab-members" onclick="switchAdminTab('members', this)">👥 Members</button>
+          <button class="admin-tab" id="atab-content" onclick="switchAdminTab('content', this)">📝 Content</button>
+          <button class="admin-tab" id="atab-settings" onclick="switchAdminTab('settings', this)">🔑 Settings</button>
+        </div>
+        <div class="admin-content">
+
+          <!-- Dashboard -->
+          <div id="adminTab-dashboard" class="admin-tab-content active">
+            <div class="admin-page-title">📊 Dashboard</div>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="admin-section-card">
+              <div class="admin-section-card-header">
+                <h3>⏳ Pending Approvals</h3>
+                <span class="badge-count" id="pendingCount">0</span>
+              </div>
+              <div id="pendingList"></div>
+            </div>
+            <div class="admin-section-card">
+              <div class="admin-section-card-header">
+                <h3>🔔 Notifications</h3>
+              </div>
+              <div id="notifList"></div>
+            </div>
+          </div>
+
+          <!-- Events Management -->
+          <div id="adminTab-events" class="admin-tab-content">
+            <div class="admin-section-header">
+              <div class="admin-page-title">🎉 Manage Events</div>
+              <button class="btn-add" onclick="openEventModal()">+ Add Event</button>
+            </div>
+            <div id="adminEventsList"></div>
+          </div>
+
+          <!-- Members Management -->
+          <div id="adminTab-members" class="admin-tab-content">
+            <div class="admin-page-title">👥 Manage Members</div>
+            <div id="adminMembersList"></div>
+          </div>
+
+          <!-- Content Settings -->
+          <div id="adminTab-content" class="admin-tab-content">
+            <div class="admin-page-title">📝 Edit Website Content</div>
+            <div class="settings-section">
+              <h3>Home Page Text</h3>
+              <div class="settings-form" style="max-width: 600px;">
+                <div class="form-group">
+                  <label>Hero Description</label>
+                  <textarea id="editHeroDesc" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Call to Action Title</label>
+                  <input type="text" id="editCtaTitle">
+                </div>
+                <div class="form-group">
+                  <label>Call to Action Description</label>
+                  <textarea id="editCtaDesc" rows="3"></textarea>
+                </div>
+                <button class="btn-primary-inline" style="margin-top:10px" onclick="saveContentSettings()">Save
+                  Content</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div id="adminTab-settings" class="admin-tab-content">
+            <div class="admin-page-title">🔑 Settings</div>
+            <div class="settings-section">
+              <h3>Change Admin Password</h3>
+              <div class="settings-form">
+                <div class="input-group">
+                  <span class="input-icon">🔒</span>
+                  <input type="password" id="settingCurrPass" placeholder="Current password">
+                </div>
+                <div class="input-group">
+                  <span class="input-icon">🔑</span>
+                  <input type="password" id="settingNewPass" placeholder="New password">
+                </div>
+                <button class="btn-primary btn-inline" onclick="changeAdminPassword()">Update Password</button>
+                <div id="settingMsg" class="error-msg" style="display:none;margin-top:10px"></div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3>Member Passwords</h3>
+              <div id="memberPasswordsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- EVENT MODAL -->
+  <div id="eventModal" class="modal" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="eventModalTitle">Add Event</h2>
+        <button onclick="closeEventModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editEventId">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title (English) *</label>
+            <input type="text" id="evTitleEn" placeholder="Event title in English">
+          </div>
+          <div class="form-group">
+            <label>Title (Tamil)</label>
+            <input type="text" id="evTitleTa" placeholder="நிகழ்வு தலைப்பு">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Event Date *</label>
+            <input type="date" id="evDate">
+          </div>
+          <div class="form-group">
+            <label>Tamil Month</label>
+            <select id="evTamilMonth">
+              <option value="">Select Tamil Month</option>
+              <option value="சித்திரை">சித்திரை (Chithirai)</option>
+              <option value="வைகாசி">வைகாசி (Vaikasi)</option>
+              <option value="ஆனி">ஆனி (Aani)</option>
+              <option value="ஆடி">ஆடி (Aadi)</option>
+              <option value="ஆவணி">ஆவணி (Aavani)</option>
+              <option value="புரட்டாசி">புரட்டாசி (Purattasi)</option>
+              <option value="ஐப்பசி">ஐப்பசி (Aippasi)</option>
+              <option value="கார்த்திகை">கார்த்திகை (Karthigai)</option>
+              <option value="மார்கழி">மார்கழி (Margazhi)</option>
+              <option value="தை">தை (Thai)</option>
+              <option value="மாசி">மாசி (Maasi)</option>
+              <option value="பங்குனி">பங்குனி (Panguni)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tamil Day</label>
+            <input type="number" id="evTamilDay" min="1" max="30" placeholder="1-30">
+          </div>
         </div>
         <div class="form-group">
-          <label>Title (Tamil)</label>
-          <input type="text" id="evTitleTa" placeholder="நிகழ்வு தலைப்பு">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Event Date *</label>
-          <input type="date" id="evDate">
+          <label>Description (English)</label>
+          <textarea id="evDescEn" rows="3" placeholder="Event description..."></textarea>
         </div>
         <div class="form-group">
-          <label>Tamil Month</label>
-          <select id="evTamilMonth">
-            <option value="">Select Tamil Month</option>
-            <option value="சித்திரை">சித்திரை (Chithirai)</option>
-            <option value="வைகாசி">வைகாசி (Vaikasi)</option>
-            <option value="ஆனி">ஆனி (Aani)</option>
-            <option value="ஆடி">ஆடி (Aadi)</option>
-            <option value="ஆவணி">ஆவணி (Aavani)</option>
-            <option value="புரட்டாசி">புரட்டாசி (Purattasi)</option>
-            <option value="ஐப்பசி">ஐப்பசி (Aippasi)</option>
-            <option value="கார்த்திகை">கார்த்திகை (Karthigai)</option>
-            <option value="மார்கழி">மார்கழி (Margazhi)</option>
-            <option value="தை">தை (Thai)</option>
-            <option value="மாசி">மாசி (Maasi)</option>
-            <option value="பங்குனி">பங்குனி (Panguni)</option>
-          </select>
+          <label>Description (Tamil)</label>
+          <textarea id="evDescTa" rows="3" placeholder="நிகழ்வு விளக்கம்..."></textarea>
         </div>
         <div class="form-group">
-          <label>Tamil Day</label>
-          <input type="number" id="evTamilDay" min="1" max="30" placeholder="1-30">
+          <label>Photos &amp; Videos</label>
+          <input type="file" id="evMedia" multiple accept="image/*,video/*" class="file-input">
+          <div id="mediaPreview" class="media-preview-grid"></div>
+        </div>
+        <div class="form-group">
+          <label>Expenses</label>
+          <div id="expensesList"></div>
+          <button type="button" class="btn-secondary" onclick="addExpenseRow()">+ Add Expense</button>
         </div>
       </div>
-      <div class="form-group">
-        <label>Description (English)</label>
-        <textarea id="evDescEn" rows="3" placeholder="Event description..."></textarea>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEventModal()">Cancel</button>
+        <button class="btn-primary-inline" onclick="saveEvent()">Save Event</button>
       </div>
-      <div class="form-group">
-        <label>Description (Tamil)</label>
-        <textarea id="evDescTa" rows="3" placeholder="நிகழ்வு விளக்கம்..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Photos &amp; Videos</label>
-        <input type="file" id="evMedia" multiple accept="image/*,video/*" class="file-input">
-        <div id="mediaPreview" class="media-preview-grid"></div>
-      </div>
-      <div class="form-group">
-        <label>Expenses</label>
-        <div id="expensesList"></div>
-        <button type="button" class="btn-secondary" onclick="addExpenseRow()">+ Add Expense</button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeEventModal()">Cancel</button>
-      <button class="btn-primary-inline" onclick="saveEvent()">Save Event</button>
     </div>
   </div>
-</div>
 
-<!-- MEMBER DETAIL MODAL (Admin) -->
-<div id="memberPhotoModal" class="modal" style="display:none">
-  <div class="modal-box modal-large">
-    <div class="modal-header">
-      <h2 id="memberPhotoModalTitle">Member Details</h2>
-      <button onclick="closeMemberPhotoModal()">✕</button>
-    </div>
-    <div class="modal-body" id="memberPhotoModalBody"></div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeMemberPhotoModal()">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONFIRM MODAL -->
-<div id="confirmModal" class="modal" style="display:none">
-  <div class="modal-box modal-small">
-    <div class="modal-header"><h2>⚠️ Confirm</h2></div>
-    <div class="modal-body">
-      <p id="confirmMsg">Are you sure?</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn-danger" id="confirmBtn">Confirm</button>
-    </div>
-  </div>
-</div>
-
-<!-- RESET PASSWORD MODAL -->
-<div id="resetPassModal" class="modal" style="display:none">
-  <div class="modal-box modal-small">
-    <div class="modal-header">
-      <h2>Reset Member Password</h2>
-      <button onclick="document.getElementById('resetPassModal').style.display='none'">✕</button>
-    </div>
-    <div class="modal-body">
-      <p id="resetPassName"></p>
-      <div class="input-group" style="margin-top:12px">
-        <span class="input-icon">🔑</span>
-        <input type="password" id="resetPassInput" placeholder="New password">
+  <!-- MEMBER DETAIL MODAL (Admin) -->
+  <div id="memberPhotoModal" class="modal" style="display:none">
+    <div class="modal-box modal-large">
+      <div class="modal-header">
+        <h2 id="memberPhotoModalTitle">Member Details</h2>
+        <button onclick="closeMemberPhotoModal()">✕</button>
+      </div>
+      <div class="modal-body" id="memberPhotoModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeMemberPhotoModal()">Close</button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="document.getElementById('resetPassModal').style.display='none'">Cancel</button>
-      <button class="btn-primary-inline" onclick="doResetPass()">Reset Password</button>
+  </div>
+
+  <!-- CONFIRM MODAL -->
+  <div id="confirmModal" class="modal" style="display:none">
+    <div class="modal-box modal-small">
+      <div class="modal-header">
+        <h2>⚠️ Confirm</h2>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMsg">Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+        <button class="btn-danger" id="confirmBtn">Confirm</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
+  <!-- RESET PASSWORD MODAL -->
+  <div id="resetPassModal" class="modal" style="display:none">
+    <div class="modal-box modal-small">
+      <div class="modal-header">
+        <h2>Reset Member Password</h2>
+        <button onclick="document.getElementById('resetPassModal').style.display='none'">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="resetPassName"></p>
+        <div class="input-group" style="margin-top:12px">
+          <span class="input-icon">🔑</span>
+          <input type="password" id="resetPassInput" placeholder="New password">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary"
+          onclick="document.getElementById('resetPassModal').style.display='none'">Cancel</button>
+        <button class="btn-primary-inline" onclick="doResetPass()">Reset Password</button>
+      </div>
+    </div>
+  </div>
 
-<script src="app.js"></script>
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
 </body>
+
 </html>
