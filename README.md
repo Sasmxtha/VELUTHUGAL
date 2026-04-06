@@ -33,16 +33,6 @@ Open http://localhost:3000 in your browser.
 
 ---
 
-## Default Credentials
-
-**Admin:**
-- Username: `admin`
-- Password: `admin123`
-
-> ⚠️ Change the admin password immediately after first login via Admin Panel → Settings.
-
----
-
 ## Folder Structure
 
 ```
