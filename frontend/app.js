@@ -149,10 +149,10 @@ async function apiFetch(endpoint, options = {}) {
   if (currentUser?.token) headers['Authorization'] = 'Bearer ' + currentUser.token;
   if (options.body instanceof FormData) delete headers['Content-Type'];
   
-  // Ensure the base URL is correct dynamically (or hardcode to localhost:3000 if needed)
-  const baseUrl = API || 'http://localhost:3000';
+  // Since the frontend and backend are hosted on the same server,
+  // we can use relative paths which will natively adapt to Render or Localhost!
+  const res = await fetch(endpoint, { ...options, headers });
   
-  const res = await fetch(baseUrl + endpoint, { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Request failed');
   return data;
