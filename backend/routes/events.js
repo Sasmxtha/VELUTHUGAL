@@ -1,26 +1,12 @@
 // backend/routes/events.js
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const { getDB, save, query, run } = require('../../database/db');
+const { Event } = require('../../database/models');
+const { createUploader, deleteFromCloudinary } = require('../../database/cloudinary');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'veluthugal_secret_2024';
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const type = file.mimetype.startsWith('video') ? 'eventVideos' : 'eventPhotos';
-    const dir = path.join(__dirname, '../../uploads', type);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_'));
-  }
-});
-const upload = multer({ storage, limits: { fileSize: 100 * 1024 * 1024 } });
+const upload = createUploader('veluthugal/events');
 
 function getUser(req) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -33,15 +19,20 @@ function requireAdmin(req, res, next) {
   req.user = u; next();
 }
 
+function totalSpent(expenses) {
+  return expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+}
+
 // GET all events
 router.get('/', async (req, res) => {
   try {
-    const db = await getDB();
-    const events = query(db, 'SELECT * FROM events ORDER BY event_date DESC');
+    const events = await Event.find().sort({ event_date: -1 });
     const result = events.map(e => {
-      const media = query(db, 'SELECT * FROM event_media WHERE event_id = ? ORDER BY sort_order ASC LIMIT 1', [e.id]);
-      const totRows = query(db, 'SELECT SUM(amount) as total FROM event_expenses WHERE event_id = ?', [e.id]);
-      return { ...e, cover_media: media[0] || null, total_spent: totRows[0]?.total || 0 };
+      const obj = e.toObject();
+      obj.id = obj._id;
+      obj.cover_media = obj.media?.[0] || null;
+      obj.total_spent = totalSpent(obj.expenses);
+      return obj;
     });
     res.json(result);
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -50,15 +41,14 @@ router.get('/', async (req, res) => {
 // GET single event
 router.get('/:id', async (req, res) => {
   try {
-    const db = await getDB();
     const user = getUser(req);
-    const rows = query(db, 'SELECT * FROM events WHERE id = ?', [parseInt(req.params.id)]);
-    if (!rows.length) return res.status(404).json({ error: 'Event not found' });
-    const e = rows[0];
-    const media = query(db, 'SELECT * FROM event_media WHERE event_id = ? ORDER BY sort_order ASC', [e.id]);
-    const expenses = user ? query(db, 'SELECT * FROM event_expenses WHERE event_id = ?', [e.id]) : [];
-    const totRows = user ? query(db, 'SELECT SUM(amount) as total FROM event_expenses WHERE event_id = ?', [e.id]) : [{ total: 0 }];
-    res.json({ ...e, media, expenses, total_spent: totRows[0]?.total || 0 });
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+    const obj = event.toObject();
+    obj.id = obj._id;
+    obj.total_spent = totalSpent(obj.expenses);
+    if (!user) obj.expenses = [];
+    res.json(obj);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -67,29 +57,25 @@ router.post('/', requireAdmin, upload.array('media', 50), async (req, res) => {
   try {
     const { title_en, title_ta, description_en, description_ta, event_date, tamil_month, tamil_day, expenses } = req.body;
     if (!title_en || !event_date) return res.status(400).json({ error: 'Title and date required' });
-    const db = await getDB();
-    const result = run(db,
-      'INSERT INTO events (title_en, title_ta, description_en, description_ta, event_date, tamil_month, tamil_day) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [title_en, title_ta || '', description_en || '', description_ta || '', event_date, tamil_month || '', tamil_day || '']
-    );
-    const eventId = result.lastInsertRowid;
-    if (req.files?.length) {
-      req.files.forEach((file, idx) => {
-        const type = file.mimetype.startsWith('video') ? 'video' : 'photo';
-        const subdir = type === 'video' ? 'eventVideos' : 'eventPhotos';
-        run(db, 'INSERT INTO event_media (event_id, file_path, file_type, sort_order) VALUES (?, ?, ?, ?)',
-          [eventId, `/uploads/${subdir}/${file.filename}`, type, idx]);
-      });
-    }
-    if (expenses) {
-      const expList = typeof expenses === 'string' ? JSON.parse(expenses) : expenses;
-      expList.forEach(exp => {
-        if (exp.item) run(db, 'INSERT INTO event_expenses (event_id, item, amount, category) VALUES (?, ?, ?, ?)',
-          [eventId, exp.item, parseFloat(exp.amount) || 0, exp.category || '']);
-      });
-    }
-    save();
-    res.json({ message: 'Event created', id: eventId });
+
+    const media = (req.files || []).map((file, idx) => ({
+      file_path: file.path,
+      cloudinary_id: file.filename,
+      file_type: file.mimetype?.startsWith('video') ? 'video' : 'photo',
+      sort_order: idx
+    }));
+
+    const expList = expenses ? (typeof expenses === 'string' ? JSON.parse(expenses) : expenses) : [];
+
+    const event = await Event.create({
+      title_en, title_ta: title_ta || '',
+      description_en: description_en || '', description_ta: description_ta || '',
+      event_date, tamil_month: tamil_month || '', tamil_day: tamil_day || '',
+      media,
+      expenses: expList.filter(e => e.item).map(e => ({ item: e.item, amount: parseFloat(e.amount) || 0, category: e.category || '' }))
+    });
+
+    res.json({ message: 'Event created', id: event._id });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -97,27 +83,33 @@ router.post('/', requireAdmin, upload.array('media', 50), async (req, res) => {
 router.put('/:id', requireAdmin, upload.array('media', 50), async (req, res) => {
   try {
     const { title_en, title_ta, description_en, description_ta, event_date, tamil_month, tamil_day, expenses } = req.body;
-    const id = parseInt(req.params.id);
-    const db = await getDB();
-    run(db, 'UPDATE events SET title_en=?, title_ta=?, description_en=?, description_ta=?, event_date=?, tamil_month=?, tamil_day=? WHERE id=?',
-      [title_en, title_ta || '', description_en || '', description_ta || '', event_date, tamil_month || '', tamil_day || '', id]);
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+
+    event.title_en = title_en;
+    event.title_ta = title_ta || '';
+    event.description_en = description_en || '';
+    event.description_ta = description_ta || '';
+    event.event_date = event_date;
+    event.tamil_month = tamil_month || '';
+    event.tamil_day = tamil_day || '';
+
     if (req.files?.length) {
-      req.files.forEach((file, idx) => {
-        const type = file.mimetype.startsWith('video') ? 'video' : 'photo';
-        const subdir = type === 'video' ? 'eventVideos' : 'eventPhotos';
-        run(db, 'INSERT INTO event_media (event_id, file_path, file_type, sort_order) VALUES (?, ?, ?, ?)',
-          [id, `/uploads/${subdir}/${file.filename}`, type, 999 + idx]);
-      });
+      const newMedia = req.files.map((file, idx) => ({
+        file_path: file.path,
+        cloudinary_id: file.filename,
+        file_type: file.mimetype?.startsWith('video') ? 'video' : 'photo',
+        sort_order: 999 + idx
+      }));
+      event.media.push(...newMedia);
     }
+
     if (expenses) {
       const expList = typeof expenses === 'string' ? JSON.parse(expenses) : expenses;
-      run(db, 'DELETE FROM event_expenses WHERE event_id = ?', [id]);
-      expList.forEach(exp => {
-        if (exp.item) run(db, 'INSERT INTO event_expenses (event_id, item, amount, category) VALUES (?, ?, ?, ?)',
-          [id, exp.item, parseFloat(exp.amount) || 0, exp.category || '']);
-      });
+      event.expenses = expList.filter(e => e.item).map(e => ({ item: e.item, amount: parseFloat(e.amount) || 0, category: e.category || '' }));
     }
-    save();
+
+    await event.save();
     res.json({ message: 'Event updated' });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -125,17 +117,13 @@ router.put('/:id', requireAdmin, upload.array('media', 50), async (req, res) => 
 // DELETE event
 router.delete('/:id', requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    const db = await getDB();
-    const media = query(db, 'SELECT * FROM event_media WHERE event_id = ?', [id]);
-    media.forEach(m => {
-      const fullPath = path.join(__dirname, '../..', m.file_path);
-      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-    });
-    run(db, 'DELETE FROM event_media WHERE event_id = ?', [id]);
-    run(db, 'DELETE FROM event_expenses WHERE event_id = ?', [id]);
-    run(db, 'DELETE FROM events WHERE id = ?', [id]);
-    save();
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+    for (const m of event.media) {
+      const resType = m.file_type === 'video' ? 'video' : 'image';
+      await deleteFromCloudinary(m.cloudinary_id, resType);
+    }
+    await event.deleteOne();
     res.json({ message: 'Event deleted' });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -143,13 +131,14 @@ router.delete('/:id', requireAdmin, async (req, res) => {
 // DELETE single media
 router.delete('/:id/media/:mediaId', requireAdmin, async (req, res) => {
   try {
-    const db = await getDB();
-    const rows = query(db, 'SELECT * FROM event_media WHERE id = ? AND event_id = ?', [parseInt(req.params.mediaId), parseInt(req.params.id)]);
-    if (rows.length) {
-      const fullPath = path.join(__dirname, '../..', rows[0].file_path);
-      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-      run(db, 'DELETE FROM event_media WHERE id = ?', [parseInt(req.params.mediaId)]);
-      save();
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+    const mediaItem = event.media.id(req.params.mediaId);
+    if (mediaItem) {
+      const resType = mediaItem.file_type === 'video' ? 'video' : 'image';
+      await deleteFromCloudinary(mediaItem.cloudinary_id, resType);
+      mediaItem.deleteOne();
+      await event.save();
     }
     res.json({ message: 'Media deleted' });
   } catch (e) { res.status(500).json({ error: e.message }); }
